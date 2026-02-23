@@ -53,3 +53,13 @@ class PublishNotification(APIView):
         message = request.data.get('message', 'no message')
         r.publish('notifications', message)
         return Response({'message': 'Notification published successfully'}, status=status.HTTP_200_OK)
+
+class LeaderBoardAPI(APIView):
+    def get(self, request):
+        top_users = r.zrevrange('leaderboard', 0, 4, withscores=True)
+        return Response({'top_users': top_users}, status=status.HTTP_200_OK)
+    def post(self, request):
+        user = request.data.get('user')
+        score = request.data.get('score', 0)
+        r.zadd('leaderboard', {user: score})
+        return Response({'message': 'Leaderboard updated successfully'}, status=status.HTTP_200_OK)
