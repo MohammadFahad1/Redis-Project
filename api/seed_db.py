@@ -40,5 +40,5 @@ def seed_data(n=200):
     print(f"Successfully added {n} dummy records!")
 
 if __name__ == "__main__":
-    seed_data(200) # Change number as needed
+    seed_data(9000) # Change number as needed
     print("Done!")

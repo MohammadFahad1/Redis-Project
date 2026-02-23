@@ -5,6 +5,7 @@ from rest_framework import status
 from api.models import Product, Order
 from api.serializers import ProductSerializer, OrderSerializer
 from django.core.cache import cache
+from api.rate_limiter import rate_limit
 # Create your views here.
 
 """ class ProductList(APIView):
@@ -22,6 +23,7 @@ from django.core.cache import cache
 class ProductList(APIView):
     queryset = Product.objects.all()
     
+    @rate_limit(max_requests=5, time_window=60)
     def get(self, request):
         cache_key = 'products'
         if cache.get(cache_key):
