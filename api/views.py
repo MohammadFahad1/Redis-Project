@@ -6,6 +6,8 @@ from api.models import Product, Order
 from api.serializers import ProductSerializer, OrderSerializer
 from django.core.cache import cache
 from api.rate_limiter import rate_limit
+import redis
+r = redis.Redis()
 # Create your views here.
 
 """ class ProductList(APIView):
@@ -45,3 +47,9 @@ class OrderList(APIView):
         serializer = OrderSerializer(orders, many=True)
         cache.set(cache_key, serializer.data, timeout=60*60)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class PublishNotification(APIView):
+    def post(self, request):
+        message = request.data.get('message', 'no message')
+        r.publish('notifications', message)
+        return Response({'message': 'Notification published successfully'}, status=status.HTTP_200_OK)
